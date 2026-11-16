@@ -1,0 +1,73 @@
+# Pipeline de CI/CD
+#  - CI: en cada push y pull request instala dependencias y ejecuta las pruebas con Jest.
+#  - CD: si las pruebas pasan y el cambio llegó a la rama main, despliega a producción en Vercel.
+#
+# Secretos requeridos en GitHub (Settings > Secrets and variables > Actions):
+#   VERCEL_TOKEN       Token personal de Vercel (Account Settings > Tokens)
+#   VERCEL_ORG_ID      ID de la cuenta o equipo de Vercel
+#   VERCEL_PROJECT_ID  ID del proyecto en Vercel (Project Settings > General)
+# Las variables de la app (MONGODB_URI, JWT_SECRET, ADMIN_*) se configuran en Vercel, no aquí.
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pruebas:
+    name: Pruebas (Jest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm run test:coverage
+
+  despliegue:
+    name: Despliegue a Vercel (producción)
+    needs: pruebas
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Descargar la configuración del proyecto en Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Construir
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Desplegar a producción
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
