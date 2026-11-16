@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo de la tienda escolar del Colegio Tesla.">
+  <title>Productos | Tienda Escolar Colegio Tesla</title>
+  <link rel="icon" href="img/logo-tesla.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>try { if (!localStorage.getItem('tienda_token')) location.replace('login.html'); } catch (e) { location.replace('login.html'); }</script>
+  <script src="js/api.js" defer></script>
+  <script src="js/productos.js" defer></script>
+</head>
+<body class="pagina-panel">
+  <header class="topbar">
+    <div class="topbar-marca">
+      <img src="img/logo-tesla.png" alt="Colegio Tesla" class="topbar-logo" width="552" height="373">
+      <span class="topbar-titulo">Tienda escolar</span>
+    </div>
+    <div class="topbar-usuario">
+      <span class="avatar" id="avatar" aria-hidden="true">?</span>
+      <div class="usuario-datos">
+        <span id="usuario-nombre" class="usuario-nombre">Cargando…</span>
+        <span id="usuario-rol" class="usuario-rol"></span>
+      </div>
+      <button type="button" id="btn-salir" class="btn btn-fantasma btn-chico">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="panel">
+    <div class="encabezado-panel">
+      <div>
+        <h1>Productos</h1>
+        <p id="contador" class="sub">Cargando catálogo…</p>
+      </div>
+      <button type="button" id="btn-nuevo" class="btn btn-primario solo-admin" hidden>+ Nuevo producto</button>
+    </div>
+
+    <div class="filtros" role="search">
+      <label for="buscar" class="sr-only">Buscar productos</label>
+      <input type="search" id="buscar" placeholder="Buscar por nombre…">
+      <label for="filtro-categoria" class="sr-only">Categoría</label>
+      <select id="filtro-categoria"><option value="">Todas las categorías</option></select>
+      <label for="filtro-nivel" class="sr-only">Nivel</label>
+      <select id="filtro-nivel">
+        <option value="">Todos los niveles</option>
+        <option value="preescolar">Preescolar</option>
+        <option value="primaria">Primaria</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+
+    <ul id="lista" class="grid-productos" aria-live="polite"></ul>
+    <p id="vacio" class="vacio" hidden>No hay productos con estos filtros.</p>
+
+    <!-- Gestión de categorías (solo admin) -->
+    <section class="tarjeta categorias solo-admin" aria-labelledby="titulo-cat" hidden>
+      <h2 id="titulo-cat">Categorías</h2>
+      <form id="form-categoria" class="form-linea" novalidate>
+        <label for="cat-nombre" class="sr-only">Nueva categoría</label>
+        <input type="text" id="cat-nombre" placeholder="Nueva categoría" maxlength="50" required>
+        <button type="submit" class="btn btn-secundario">Agregar</button>
+      </form>
+      <ul id="lista-categorias" class="chips"></ul>
+    </section>
+  </main>
+
+  <!-- Formulario de producto (crear / editar) -->
+  <dialog id="dialogo-producto" class="dialogo" aria-labelledby="titulo-dialogo">
+    <form id="form-producto" method="dialog" novalidate>
+      <h2 id="titulo-dialogo">Nuevo producto</h2>
+      <div class="campo">
+        <label for="p-nombre">Nombre *</label>
+        <input type="text" id="p-nombre" maxlength="100" required>
+        <p class="error-campo" data-error="nombre"></p>
+      </div>
+      <div class="campo">
+        <label for="p-descripcion">Descripción</label>
+        <textarea id="p-descripcion" rows="3" maxlength="500"></textarea>
+      </div>
+      <div class="fila-3">
+        <div class="campo">
+          <label for="p-precio">Precio (MXN) *</label>
+          <input type="number" id="p-precio" min="0" step="0.5" required>
+          <p class="error-campo" data-error="precio"></p>
+        </div>
+        <div class="campo">
+          <label for="p-stock">Stock</label>
+          <input type="number" id="p-stock" min="0" step="1" value="0">
+          <p class="error-campo" data-error="stock"></p>
+        </div>
+        <div class="campo">
+          <label for="p-nivel">Nivel</label>
+          <select id="p-nivel">
+            <option value="general">General</option>
+            <option value="preescolar">Preescolar</option>
+            <option value="primaria">Primaria</option>
+          </select>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="p-categoria">Categoría *</label>
+        <select id="p-categoria" required></select>
+        <p class="error-campo" data-error="categoria"></p>
+      </div>
+      <div class="dialogo-acciones">
+        <button type="button" id="btn-cancelar" class="btn btn-secundario">Cancelar</button>
+        <button type="submit" id="btn-guardar" class="btn btn-primario"><span class="spinner" aria-hidden="true"></span><span class="btn-texto">Guardar</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</body>
+</html>

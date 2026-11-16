@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inicio de sesión de la tienda escolar del Colegio Tesla.">
+  <title>Iniciar sesión | Tienda Escolar Colegio Tesla</title>
+  <link rel="icon" href="img/logo-tesla.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/api.js" defer></script>
+  <script src="js/login.js" defer></script>
+</head>
+<body class="pagina-login">
+  <main class="login">
+    <section class="login-marca" aria-hidden="true">
+      <img src="img/logo-tesla.png" alt="" class="marca-logo" width="552" height="373">
+      <h2 class="marca-titulo">Tienda escolar</h2>
+      <p class="marca-frase">Uniformes, útiles y libros del Colegio Tesla en un solo lugar.</p>
+      <ul class="marca-lista">
+        <li>Catálogo de preescolar y primaria</li>
+        <li>Precios y disponibilidad al día</li>
+        <li>Acceso seguro con tu cuenta</li>
+      </ul>
+    </section>
+
+    <section class="login-panel" aria-labelledby="titulo-form">
+      <div class="login-card">
+        <img src="img/logo-tesla.png" alt="Colegio Tesla" class="login-logo-movil" width="552" height="373">
+
+        <div class="tabs-login" role="tablist" aria-label="Acceso">
+          <button type="button" role="tab" id="tab-login" class="tab-login activa" aria-selected="true" aria-controls="form-login">Iniciar sesión</button>
+          <button type="button" role="tab" id="tab-registro" class="tab-login" aria-selected="false" aria-controls="form-registro" tabindex="-1">Crear cuenta</button>
+        </div>
+
+        <div id="alerta" class="alerta" role="alert" hidden></div>
+
+        <!-- Inicio de sesión -->
+        <form id="form-login" role="tabpanel" aria-labelledby="tab-login" novalidate>
+          <h1 id="titulo-form">Bienvenido</h1>
+          <p class="login-sub">Entra con tu correo y contraseña.</p>
+          <div class="campo">
+            <label for="login-email">Correo electrónico</label>
+            <input type="email" id="login-email" autocomplete="username" required placeholder="nombre@correo.com">
+          </div>
+          <div class="campo">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" autocomplete="current-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primario btn-bloque"><span class="spinner" aria-hidden="true"></span><span class="btn-texto">Iniciar sesión</span></button>
+        </form>
+
+        <!-- Registro -->
+        <form id="form-registro" role="tabpanel" aria-labelledby="tab-registro" novalidate hidden>
+          <h1>Crea tu cuenta</h1>
+          <p class="login-sub">Para padres de familia y alumnos.</p>
+          <div class="campo">
+            <label for="reg-nombre">Nombre completo</label>
+            <input type="text" id="reg-nombre" autocomplete="name" required>
+          </div>
+          <div class="campo">
+            <label for="reg-email">Correo electrónico</label>
+            <input type="email" id="reg-email" autocomplete="email" required>
+          </div>
+          <div class="campo">
+            <label for="reg-password">Contraseña</label>
+            <input type="password" id="reg-password" autocomplete="new-password" required aria-describedby="ayuda-pass">
+            <p id="ayuda-pass" class="ayuda">Mínimo 8 caracteres, con letras y números.</p>
+          </div>
+          <button type="submit" class="btn btn-primario btn-bloque"><span class="spinner" aria-hidden="true"></span><span class="btn-texto">Crear cuenta</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

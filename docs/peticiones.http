@@ -1,0 +1,47 @@
+### Peticiones de prueba (extensión REST Client de VS Code)
+@base = http://localhost:3000/api
+
+### Iniciar sesión como administrador
+# @name loginAdmin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "email": "admin@tiendatesla.mx", "password": "CambiaEsta2026" }
+
+###
+@admin = {{loginAdmin.response.body.data.token}}
+
+### Registrar un cliente
+# @name registro
+POST {{base}}/auth/registro
+Content-Type: application/json
+
+{ "nombre": "Laura Gómez", "email": "laura@correo.com", "password": "Laura2026" }
+
+###
+@cliente = {{registro.response.body.data.token}}
+
+### Productos sin token -> 401
+GET {{base}}/productos
+
+### Catálogo como cliente -> 200
+GET {{base}}/productos
+Authorization: Bearer {{cliente}}
+
+### Cliente intenta crear -> 403
+POST {{base}}/productos
+Authorization: Bearer {{cliente}}
+Content-Type: application/json
+
+{ "nombre": "Gorra escolar", "precio": 150, "categoria": "ID_DE_CATEGORIA" }
+
+### Categorías (copia un _id para crear productos)
+GET {{base}}/categorias
+Authorization: Bearer {{admin}}
+
+### Crear producto como admin -> 201
+POST {{base}}/productos
+Authorization: Bearer {{admin}}
+Content-Type: application/json
+
+{ "nombre": "Gorra escolar", "descripcion": "Gorra azul con logo", "precio": 150, "stock": 20, "nivel": "general", "categoria": "ID_DE_CATEGORIA" }
